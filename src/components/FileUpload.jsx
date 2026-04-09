@@ -14,7 +14,6 @@ const FileUpload = ({ onProcessed }) => {
 
         try {
             const extractRes = await extractPdf(formData);
-
             const rawText = extractRes.text;
             setStatus("synthesizing");
 
@@ -22,12 +21,12 @@ const FileUpload = ({ onProcessed }) => {
                 text: rawText
             });
 
-            const responseData = synthesizeRes.data;
-            if (responseData.error) {
-                throw new Error(responseData.error);
+            // synthesizeRes is already the response data
+            if (synthesizeRes.error) {
+                throw new Error(synthesizeRes.error);
             }
 
-            const wikiJson = responseData.candidates[0].content.parts[0].text;
+            const wikiJson = synthesizeRes.candidates[0].content.parts[0].text;
             onProcessed(wikiJson, file.name);
             setStatus("idle");
         } catch (error) {
